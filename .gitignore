@@ -7,3 +7,4 @@ next-env.d.ts
 .env*
 hero/drafts/*.mp4
 .impeccable/review/
+artifact/

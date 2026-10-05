@@ -59,6 +59,13 @@ Each chapter of the story plays a short clip as a scroll-scrubbed WebP frame seq
 - **Timing:** which beat plays which clip, and over which stretch of scroll, is set in `storyBeats` in `src/content/site.ts`.
 - **Weight:** about 17 MB of frames on desktop and 12 MB on phones, fetched chapter by chapter as the visitor approaches. Visitors with data saver on get stills only.
 
+## Artifact preview (claude.ai)
+
+`npx next build && python3 scripts/build_artifact.py` packages the site into `artifact/` for the claude.ai preview.
+- **Branding:** claude.ai artifacts can't carry a real company's identity, so the script swaps the company name, logo and contact details for placeholders. It fails if any real detail survives.
+- **Runtime:** Next's runtime is dropped. `scripts/artifact/site.js` runs the story, header, menu and form instead.
+- **Clips:** phones use the wide frames, cropped to fit.
+
 ## Before launch: still needed from Lonestar
 
 - [ ] Official Arabic trade name, as on the CR (`لون ستار للشحن` is a working name), plus the CR and VAT numbers (`src/content/site.ts`; the footer shows them once filled in)
