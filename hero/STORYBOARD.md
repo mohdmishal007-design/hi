@@ -56,10 +56,14 @@ Audio doesn't matter; I strip it.
 ### C3 — Air: urgent spare · start frame **S4**
 > The white cargo jet descends the last few meters and touches down on the desert runway, tires puffing white smoke, then rolls toward and past the camera as the sun breaks over the horizon behind it. Heat shimmer and dust drift across the runway lights. Low camera at the runway edge, panning slightly to follow the aircraft. Cinematic, photoreal. No text, no captions.
 
-### C4 — Customs (optional) · start frame **S5**
-> Calm sunrise at the port gate. Warm light slowly spreads across the concrete and the long shadows shift; the red-and-white barrier arm swings smoothly upward and the truck carrying the crated cargo pulls away into the morning light. Locked-off camera. Cinematic, photoreal. No text, no captions.
+### C4 — Customs (optional) · start frame **S5** only
+In S5 the barrier runs alongside the truck rather than across its path, so a "barrier lifts, truck drives through" clip may look odd. The FASAH stamp is animated in code on top of whatever is used here, a still or a clip.
 
-*This one is optional. In S5 the barrier runs alongside the truck rather than across its path, so the motion may look odd. The plan is for this chapter to stay a still with an animated "Cleared through FASAH" stamp built in code.*
+**C4a, safe (recommended):** only light and camera move.
+> Calm sunrise at the port gate. Warm low sunlight slowly spreads across the concrete yard and the long shadows shift. A light haze drifts past the gantry cranes in the background. The camera makes a slow, steady push-in toward the truck and its wooden crate. Nothing else moves. Cinematic, photoreal. No text, no captions.
+
+**C4b, action (expect retries):**
+> Calm sunrise at the port gate. The red-and-white barrier arm swings smoothly upward on its post, and the truck carrying the wooden crate starts moving, rolling forward out of the shaded canopy toward the cranes in the morning light. Locked-off camera, long shadows. Cinematic, photoreal. No text, no captions.
 
 ### C5 — Road: the last mile · start frame **S6** only
 > High aerial drone shot slowly flying forward above the heavy-haul convoy as it drives along the straight desert highway at sunrise. White escort pickups with flashing amber beacons lead and follow the long lowboy trailer; fine sand blows across the asphalt and the sun glows through haze on the horizon. Smooth, steady forward motion. Cinematic, photoreal. No text, no captions.
