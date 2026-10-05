@@ -1,0 +1,51 @@
+{
+  "S1": {
+    "file": "S1.jpg",
+    "candidate": "S1-2",
+    "higgsfield_job_id": "79a42209-1870-4884-884d-71ecfa17a710",
+    "scene": "Sea: top drive loaded at Houston, night",
+    "model": "seedream_5_0_flash 2k 16:9"
+  },
+  "S2": {
+    "file": "S2.jpg",
+    "candidate": "S2-4",
+    "higgsfield_job_id": "88db2751-069f-46c3-82ae-ef0014057bd0",
+    "scene": "Sea: ocean crossing, night",
+    "model": "seedream_5_0_flash 2k 16:9"
+  },
+  "S3": {
+    "file": "S3.jpg",
+    "candidate": "S3-4",
+    "higgsfield_job_id": "1593dbcf-72cb-432f-b08e-e8f551fb96ad",
+    "scene": "Sea: arriving at Dammam port, blue hour",
+    "model": "seedream_5_0_flash 2k 16:9"
+  },
+  "S4": {
+    "file": "S4.jpg",
+    "candidate": "S4-1",
+    "higgsfield_job_id": "358f4810-6ade-4e2d-8665-025abdf42b28",
+    "scene": "Air: cargo jet landing, dawn",
+    "model": "seedream_5_0_flash 2k 16:9"
+  },
+  "S5": {
+    "file": "S5.jpg",
+    "candidate": "S5-2",
+    "higgsfield_job_id": "f576f825-16ba-416f-a402-d184c4362580",
+    "scene": "Customs: port gate, sunrise",
+    "model": "seedream_5_0_flash 2k 16:9"
+  },
+  "S6": {
+    "file": "S6.jpg",
+    "candidate": "S6-2",
+    "higgsfield_job_id": "56662125-90f9-40d3-88dc-591ce0b5c162",
+    "scene": "Road: heavy-haul convoy, sunrise",
+    "model": "seedream_5_0_flash 2k 16:9"
+  },
+  "S7": {
+    "file": "S7.jpg",
+    "candidate": "S7-1",
+    "higgsfield_job_id": "0ee5196a-5673-4972-951a-d1f444164d54",
+    "scene": "Finale: rig online, dusk",
+    "model": "seedream_5_0_flash 2k 16:9"
+  }
+}
