@@ -4,48 +4,94 @@
     "candidate": "S1-2",
     "higgsfield_job_id": "79a42209-1870-4884-884d-71ecfa17a710",
     "scene": "Sea: top drive loaded at Houston, night",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "Night at a large Gulf-coast industrial port. A towering heavy-lift ship crane lowers a massive steel oil-drilling top drive unit, suspended from rigging, onto the open deck of a heavy-lift cargo vessel. Bright floodlights, wet concrete quay reflecting the lights, light rain sparkling in the beams, small workers in hi-vis vests for scale. Wide establishing shot. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
   },
   "S2": {
     "file": "S2.jpg",
     "candidate": "S2-4",
     "higgsfield_job_id": "88db2751-069f-46c3-82ae-ef0014057bd0",
     "scene": "Sea: ocean crossing, night",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "Use the reference only for the cargo, color grade and lighting. A heavy-lift general cargo ship sailing across the open ocean at night. On its long open deck: one large steel-framed oil-drilling top drive machine, like the one in the reference, secured with chains and lashings and lit by deck floodlights; two tall ship cranes folded near the bridge. The ship has NO drilling derrick and NO tower. Aerial three-quarter view from behind and above, glowing white wake, calm dark sea, faint stars and a thin crescent moon. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights, subtle haze, high detail. No text, no logos, no signage, no watermarks, no flags.",
+    "reference": "S1 (job 79a42209-1870-4884-884d-71ecfa17a710) as image_references"
   },
   "S3": {
     "file": "S3.jpg",
     "candidate": "S3-4",
     "higgsfield_job_id": "1593dbcf-72cb-432f-b08e-e8f551fb96ad",
     "scene": "Sea: arriving at Dammam port, blue hour",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "Use the reference only for the cargo, color grade and lighting. Blue hour just before dawn. A heavy-lift general cargo ship carrying one large lashed steel-framed top drive machine on its long open deck, with two folded ship cranes near the bridge, approaches a large modern container port across calm Gulf water. The ship has NO drilling derrick and NO tower. Rows of ship-to-shore gantry cranes with lights, low flat city skyline glowing on the horizon. Aerial wide shot from behind and above the ship. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights, subtle haze, high detail. No text, no logos, no signage, no watermarks, no flags.",
+    "reference": "S1 (job 79a42209-1870-4884-884d-71ecfa17a710) as image_references"
   },
   "S4": {
     "file": "S4.jpg",
     "candidate": "S4-1",
     "higgsfield_job_id": "358f4810-6ade-4e2d-8665-025abdf42b28",
     "scene": "Air: cargo jet landing, dawn",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "Dawn over a flat desert. A large plain white wide-body cargo freighter jet on final approach to a runway, landing gear down, landing lights on, runway approach lights glowing below. Golden sunrise haze on the horizon, heat shimmer. Telephoto shot from the runway side; the plane is unbranded with no airline livery. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
   },
   "S5": {
     "file": "S5.jpg",
     "candidate": "S5-2",
     "higgsfield_job_id": "f576f825-16ba-416f-a402-d184c4362580",
     "scene": "Customs: port gate, sunrise",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "Early sunrise at a port customs inspection gate. A flatbed truck carrying a large wooden-crated industrial machine waits in front of a red-and-white barrier arm under a modern steel canopy. Long shadows, clean concrete, calm orderly scene, gantry cranes softly visible in the background haze. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
   },
   "S6": {
     "file": "S6.jpg",
     "candidate": "S6-2",
     "higgsfield_job_id": "56662125-90f9-40d3-88dc-591ce0b5c162",
     "scene": "Road: heavy-haul convoy, sunrise",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "Sunrise over the desert of eastern Saudi Arabia. A heavy-haul convoy drives along a straight two-lane desert highway: a long multi-axle lowboy trailer carrying a large drilling top drive, led and followed by pickup escort vehicles with amber beacons. Golden sand dunes, long low shadows. High aerial drone shot looking down the road. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
   },
   "S7": {
     "file": "S7.jpg",
     "candidate": "S7-1",
     "higgsfield_job_id": "0ee5196a-5673-4972-951a-d1f444164d54",
     "scene": "Finale: rig online, dusk",
-    "model": "seedream_5_0_flash 2k 16:9"
+    "model": "seedream_5_0_flash 2k 16:9",
+    "prompt": "First light in a vast flat desert. A tall onshore oil drilling rig with its derrick mast lit by bright white work lights, small support cabins around it. A heavy-haul truck convoy with amber beacons arrives in the foreground on a dirt road. Fine dust in the air, deep navy sky turning gold at the horizon. Wide cinematic shot. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
+  },
+  "extra": {
+    "S1-1": {
+      "file": "extra/S1-1.jpg",
+      "higgsfield_job_id": "379242b3-a793-4b18-8e66-876a856c601e",
+      "model": "seedream_5_0_flash 2k 16:9",
+      "prompt": "Night at a large Gulf-coast industrial port. A towering heavy-lift ship crane lowers a massive steel oil-drilling top drive unit, suspended from rigging, onto the open deck of a heavy-lift cargo vessel. Bright floodlights, wet concrete quay reflecting the lights, light rain sparkling in the beams, small workers in hi-vis vests for scale. Wide establishing shot. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
+    },
+    "S3-6": {
+      "file": "extra/S3-6.jpg",
+      "higgsfield_job_id": "747260ae-9ef0-4d04-90e0-c02d44ead377",
+      "model": "seedream_5_0_flash 2k 16:9",
+      "prompt": "Use the reference only for the cargo, color grade and lighting. Blue hour just before dawn. A heavy-lift general cargo ship carrying one large lashed steel-framed top drive machine on its long open deck, with two folded ship cranes near the bridge, approaches a large modern container port across calm Gulf water. The ship has NO drilling derrick and NO tower. Rows of ship-to-shore gantry cranes with lights, low flat city skyline glowing on the horizon. Aerial wide shot from behind and above the ship. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights, subtle haze, high detail. No text, no logos, no signage, no watermarks, no flags.",
+      "reference": "S1 (job 79a42209-1870-4884-884d-71ecfa17a710) as image_references"
+    },
+    "S5-1": {
+      "file": "extra/S5-1.jpg",
+      "higgsfield_job_id": "dfbe283a-188a-43f4-b63e-4480581fc1cc",
+      "model": "seedream_5_0_flash 2k 16:9",
+      "prompt": "Early sunrise at a port customs inspection gate. A flatbed truck carrying a large wooden-crated industrial machine waits in front of a red-and-white barrier arm under a modern steel canopy. Long shadows, clean concrete, calm orderly scene, gantry cranes softly visible in the background haze. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
+    },
+    "S6-3": {
+      "file": "extra/S6-3.jpg",
+      "higgsfield_job_id": "1af1f330-e83b-481a-a753-53653319b343",
+      "model": "seedream_5_0_flash 2k 16:9",
+      "prompt": "Sunrise over the desert of eastern Saudi Arabia. A heavy-haul convoy drives along a straight two-lane desert highway: a long multi-axle lowboy trailer carrying a large drilling top drive, led and followed by pickup escort vehicles with amber beacons. Golden sand dunes, long low shadows. High aerial drone shot looking down the road. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
+    },
+    "S7-3": {
+      "file": "extra/S7-3.jpg",
+      "higgsfield_job_id": "5c6b621c-64c2-41a4-b6bd-845c02191bf9",
+      "model": "seedream_5_0_flash 2k 16:9",
+      "prompt": "First light in a vast flat desert. A tall onshore oil drilling rig with its derrick mast lit by bright white work lights, small support cabins around it. A heavy-haul truck convoy with amber beacons arrives in the foreground on a dirt road. Fine dust in the air, deep navy sky turning gold at the horizon. Wide cinematic shot. Cinematic photoreal still, 35mm film look, deep navy shadows and cool steel-blue highlights with warm sunrise accents, subtle atmospheric haze, high detail. No text, no logos, no signage, no watermarks, no flags."
+    }
+  },
+  "brand": {
+    "logo": "Lonestar Shipping group logo, sourced from https://www.lonestarshipping.com/images/logo.png (client brand asset)",
+    "mark": "Lonestar Shipping group mark, sourced from https://www.lonestarshipping.com/icon.png (client brand asset)"
   }
 }

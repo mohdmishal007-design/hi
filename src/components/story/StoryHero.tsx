@@ -7,20 +7,24 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { scrollToY } from "@/components/SmoothScroll";
 import type { Dictionary } from "@/content";
-import { site, storyStills } from "@/content/site";
+import { STORY_TAIL, site, storyBeats } from "@/content/site";
 import { href, type Locale } from "@/lib/i18n";
 import CustomsStamp from "./CustomsStamp";
+import { FrameSequence } from "./FrameSequence";
 import RouteLine from "./RouteLine";
 import { STAMP_BEAT, activeStop, clamp01, easeOutCubic, routeProgress } from "./route";
 
 type Props = { locale: Locale; t: Dictionary["story"] };
 
-const BEATS = storyStills.length;
+const BEATS = storyBeats.length;
+const SPAN = BEATS - 1 + STORY_TAIL;
+const FIRST_CLIP = storyBeats.find((b) => b.clip)?.clip?.id;
 
 /**
- * The homepage opens on one consignment's journey: eight beats over seven
- * stills. Without script, or with reduced motion, the beats stack as full
- * screens. With motion, one sticky stage scrubs through them on scroll.
+ * The homepage opens on one consignment's journey: eight beats, each a still
+ * with an optional video clip played as a scrubbed frame sequence. Without
+ * script, or with reduced motion, the beats stack as full screens of stills.
+ * With motion, one sticky stage scrubs through them on scroll.
  */
 export default function StoryHero({ locale, t }: Props) {
   const root = useRef<HTMLElement>(null);
@@ -36,6 +40,7 @@ export default function StoryHero({ locale, t }: Props) {
     const beats = Array.from(section.querySelectorAll<HTMLElement>("[data-beat]"));
     const media = beats.map((b) => b.querySelector<HTMLElement>(".story-media")!);
     const images = beats.map((b) => b.querySelector<HTMLImageElement>("img")!);
+    const canvases = beats.map((b) => b.querySelector<HTMLCanvasElement>("canvas"));
     const captions = beats.map((b) => b.querySelector<HTMLElement>(".story-caption")!);
     const stamp = section.querySelector<HTMLElement>("[data-stamp]");
     const film = section.querySelector<HTMLElement>(".film-route")!;
@@ -43,29 +48,58 @@ export default function StoryHero({ locale, t }: Props) {
     const stops = Array.from(film.querySelectorAll<HTMLElement>("[data-stop]"));
     const current = film.querySelector<HTMLElement>("[data-route-current]")!;
 
+    // Clips: phones get the portrait crop; data-saver visitors keep the stills.
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    const variant = window.innerWidth / window.innerHeight < 0.8 ? "tall" : "wide";
+    const sequences = new Map<string, FrameSequence>();
+    if (!saveData) {
+      for (const b of storyBeats) {
+        if (b.clip && !sequences.has(b.clip.id)) sequences.set(b.clip.id, new FrameSequence(`/frames/${b.clip.id}/${variant}/`));
+      }
+    }
+
     const render = (progress: number) => {
-      const time = progress * (BEATS - 1);
+      const time = progress * SPAN;
       let stampCaption = 0;
+      const shown: number[] = [];
 
       beats.forEach((_, b) => {
         const d = time - b;
-        if (b > 0) media[b].style.opacity = String(clamp01((time - (b - 0.6)) / 0.45));
-        images[b].style.transform = `scale(${1 + 0.07 * clamp01((d + 0.6) / 1.6)})`;
+        const o = b === 0 ? 1 : clamp01((time - (b - 0.6)) / 0.45);
+        shown[b] = o;
+        if (b > 0) media[b].style.opacity = String(o);
+        // Stills drift in slowly; clips carry their own camera move.
+        if (!sequences.has(storyBeats[b].clip?.id ?? "")) {
+          images[b].style.transform = `scale(${1 + 0.07 * clamp01((d + 0.6) / 1.6)})`;
+        }
 
         const fadeIn = b === 0 ? 1 : clamp01((d + 0.45) / 0.3);
         const fadeOut = b === BEATS - 1 ? 1 : clamp01((0.45 - d) / 0.3);
-        const o = Math.min(fadeIn, fadeOut);
+        const c = Math.min(fadeIn, fadeOut);
         const cap = captions[b];
-        cap.style.opacity = String(o);
+        cap.style.opacity = String(c);
         cap.style.transform = `translate3d(0, ${-Math.max(-0.6, Math.min(0.6, d)) * 28}px, 0)`;
-        cap.style.visibility = o < 0.01 ? "hidden" : "visible";
-        cap.inert = o < 0.5;
-        if (b === STAMP_BEAT) stampCaption = o;
+        cap.style.visibility = c < 0.01 ? "hidden" : "visible";
+        cap.inert = c < 0.5;
+        if (b === STAMP_BEAT) stampCaption = c;
+      });
+
+      // Paint a beat's clip only while it is on screen and not yet covered by the next beat.
+      beats.forEach((_, b) => {
+        const clip = storyBeats[b].clip;
+        const seq = clip && sequences.get(clip.id);
+        const canvas = canvases[b];
+        if (!clip || !seq || !canvas) return;
+        if (Math.abs(time - b) < 1.6) seq.load();
+        const visible = shown[b] > 0 && (b === BEATS - 1 || shown[b + 1] < 1);
+        if (visible && seq.draw(canvas, clamp01((time - clip.from) / (clip.to - clip.from)))) {
+          canvas.dataset.ready = "";
+        }
       });
 
       if (stamp) {
         const k = easeOutCubic(clamp01((time - (STAMP_BEAT - 0.12)) / 0.22));
-        stamp.style.opacity = String(k * stampCaption);
+        stamp.style.opacity = String(stampCaption > 0 ? k : 0);
         stamp.style.transform = `rotate(-9deg) scale(${1.45 - 0.45 * k})`;
       }
 
@@ -85,12 +119,29 @@ export default function StoryHero({ locale, t }: Props) {
       onUpdate: (self) => render(self.progress),
       onRefresh: (self) => render(self.progress),
     });
+
+    // A frame that finishes decoding after scrolling stops still needs painting.
+    let pending = 0;
+    sequences.forEach((seq) => {
+      seq.onFrame = () => {
+        if (pending) return;
+        pending = requestAnimationFrame(() => {
+          pending = 0;
+          render(trigger.progress);
+        });
+      };
+    });
+
+    if (FIRST_CLIP) sequences.get(FIRST_CLIP)?.load();
     render(trigger.progress);
 
     return () => {
       trigger.kill();
+      cancelAnimationFrame(pending);
+      sequences.forEach((s) => s.dispose());
       section.dataset.mode = "stacked";
       [...media, ...images, ...captions, stamp].forEach((el) => el?.removeAttribute("style"));
+      canvases.forEach((c) => c?.removeAttribute("data-ready"));
       captions.forEach((c) => (c.inert = false));
     };
   }, [t.route]);
@@ -99,7 +150,10 @@ export default function StoryHero({ locale, t }: Props) {
     const section = root.current;
     if (!section) return;
     const next = section.querySelector<HTMLElement>('[data-beat="1"]');
-    const top = section.dataset.mode === "film" ? section.offsetTop + window.innerHeight : (next?.offsetTop ?? 0) + section.offsetTop;
+    const top =
+      section.dataset.mode === "film"
+        ? section.offsetTop + (section.offsetHeight - window.innerHeight) / SPAN
+        : section.offsetTop + (next?.offsetTop ?? 0);
     scrollToY(top);
   };
 
@@ -112,17 +166,17 @@ export default function StoryHero({ locale, t }: Props) {
       data-mode="stacked"
       aria-label={t.routeLabel}
       className="story relative"
-      style={{ "--beats": BEATS } as React.CSSProperties}
+      style={{ "--beats": BEATS + STORY_TAIL } as React.CSSProperties}
     >
       <div className="story-stage">
-        {storyStills.map((still, i) => {
+        {storyBeats.map(({ still, clip }, i) => {
           const along = routeProgress(i);
           const isIntro = i === 0;
           const isFinale = i === BEATS - 1;
           const beat = isIntro ? null : t.beats[i - 1];
           return (
             <div key={i} data-beat={i} className="story-beat">
-              {/* Each frame carries its own scrim, so stacked frames never darken each other. */}
+              {/* Each beat carries its own scrim, so stacked beats never darken each other. */}
               <div className="story-media">
                 <picture>
                   <source media="(max-aspect-ratio: 4/5)" srcSet={`/img/story/s${still}-portrait.webp`} />
@@ -138,20 +192,12 @@ export default function StoryHero({ locale, t }: Props) {
                     decoding="async"
                   />
                 </picture>
+                {clip && <canvas aria-hidden className="story-canvas" />}
                 <div aria-hidden className="story-scrim" />
               </div>
 
               {isIntro && (
                 <p className="absolute end-5 top-[5.25rem] z-10 text-[0.8125rem] text-ice/70 sm:end-8">{t.imageNote}</p>
-              )}
-
-              {i === STAMP_BEAT && (
-                <CustomsStamp
-                  top={t.stamp.top}
-                  bottom={t.stamp.bottom}
-                  rtl={rtl}
-                  className="absolute left-[18%] top-[17%] z-10 w-[clamp(150px,17vw,240px)] sm:left-[22%] sm:top-[21%]"
-                />
               )}
 
               <div className="story-caption absolute inset-0 z-10 flex flex-col justify-end px-5 pb-28 sm:px-8 sm:pb-36">
@@ -185,6 +231,14 @@ export default function StoryHero({ locale, t }: Props) {
                     </div>
                   ) : (
                     <div className="max-w-[40rem]">
+                      {i === STAMP_BEAT && (
+                        <CustomsStamp
+                          top={t.stamp.top}
+                          bottom={t.stamp.bottom}
+                          rtl={rtl}
+                          className="mb-7 w-[clamp(140px,14vw,200px)]"
+                        />
+                      )}
                       <h2 className="tight text-[clamp(2rem,4.4vw,4rem)] font-semibold leading-[1.05]">{beat!.title}</h2>
                       <p className="mt-4 max-w-[34rem] text-lg leading-relaxed text-mist">{beat!.body}</p>
                     </div>
@@ -192,13 +246,7 @@ export default function StoryHero({ locale, t }: Props) {
                 </div>
               </div>
 
-              <RouteLine
-                className="beat-route"
-                stops={t.route}
-                label={t.routeLabel}
-                fill={along}
-                active={activeStop(along)}
-              />
+              <RouteLine className="beat-route" stops={t.route} label={t.routeLabel} fill={along} active={activeStop(along)} />
             </div>
           );
         })}

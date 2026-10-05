@@ -39,9 +39,25 @@ npm run typecheck
 | `hero/stills/` | The 7 story stills (Higgsfield, Seedream 5.0 Flash) and reused candidates; job IDs in `manifest.json` |
 | `scripts/build_images.py` | Crops and compresses stills into `public/img` |
 
-## Swapping the stills for video clips
+## Story clips
 
-The story runs on stills today. When the Flow drafts or Higgsfield final clips arrive, they replace the stills chapter by chapter; captions and timing stay as they are. The clip prompts and frame assignments are in `hero/STORYBOARD.md`.
+Each chapter of the story plays a short clip as a scroll-scrubbed WebP frame sequence. The still stays underneath as the poster, the reduced-motion image and the data-saver image.
+
+| Beat | Clip | Used span | Notes |
+|---|---|---|---|
+| Sea: loading | C1 | 0–2.25 s | Lightning appears from ~2.3 s (a lift during lightning reads as a safety breach), so it's cut |
+| Crossing → Dammam port | C2 | full 8 s | Spans two beats (S2 → S3) |
+| Air | C3 | full 8 s | |
+| Customs | C4 | full 8 s | Barrier lifts, truck drives through; the FASAH stamp lands on the caption |
+| Road | C5 | full 8 s | |
+| Finale | C6 | 0–2.7 s | From ~2.8 s the rig turns into a column of light, so it's cut. Worth a re-roll. |
+
+- **Sources:** Google Flow (Veo 3.1 Fast) drafts in `hero/drafts/C1.mp4` … `C6.mp4`. They are git-ignored (keep the originals). Prompts are in `hero/clips.json` and `hero/STORYBOARD.md`. No visible watermark was found in the frames checked.
+- **Rebuild:** `python3 scripts/build_frames.py` writes `public/frames/<clip>/wide|tall/` at 10 fps:
+  - 1280 px wide for landscape screens
+  - a 608×1080 crop that follows the subject, for phones
+- **Timing:** which beat plays which clip, and over which stretch of scroll, is set in `storyBeats` in `src/content/site.ts`.
+- **Weight:** about 17 MB of frames on desktop and 12 MB on phones, fetched chapter by chapter as the visitor approaches. Visitors with data saver on get stills only.
 
 ## Before launch: still needed from Lonestar
 

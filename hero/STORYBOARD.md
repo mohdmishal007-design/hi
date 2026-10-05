@@ -12,8 +12,8 @@ The story runs from **night to dusk**:
 
 **Pipeline**
 1. ✅ **Anchor stills (S1–S7)** generated on Higgsfield, with no watermark. They are in `stills/`, and the Higgsfield job IDs are in `stills/manifest.json`.
-2. ⏳ **Draft clips** are made in Google Flow (Frames to Video, Veo 3.1 Fast). They carry a visible watermark, so they are for building and preview only.
-3. ⏳ **Final clips** are rendered once on Higgsfield (Veo 3.1 Lite, start + end frame), reusing the prompts that worked in Flow. The job IDs let Higgsfield use the stills directly, with no re-upload.
+2. ✅ **Clips C1–C6** made in Google Flow (Frames to Video, Veo 3.1 Fast) and wired into the site as frame sequences. No visible watermark was found. Trimmed: C1 to 0–2.25 s (lightning), C6 to 0–2.7 s (light beam). See README → Story clips.
+3. ⏳ **Optional re-rolls:** C6 (avoid the light-beam effect; for example, drop "work lights brighten level by level"), and C1 if a longer clean lift is wanted (add "no lightning" to the prompt). Higgsfield Veo 3.1 Lite remains the fallback for any clip that needs a clean final render.
 
 ---
 

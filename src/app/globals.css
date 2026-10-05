@@ -165,11 +165,24 @@ html[dir="rtl"] .flip-rtl {
 }
 .story-media,
 .story-media img,
+.story-canvas,
 .story-scrim {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+}
+/* Clip frames show only in film mode, and only once the first frame is painted. */
+.story-canvas {
+  display: none;
+}
+.story[data-mode="film"] .story-canvas {
+  display: block;
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out-expo);
+}
+.story[data-mode="film"] .story-canvas[data-ready] {
+  opacity: 1;
 }
 .story-media img {
   object-fit: cover;
@@ -219,7 +232,7 @@ html[dir="rtl"] .story-scrim {
 }
 
 /* Customs stamp: blue ink pressed onto the frame. */
-/* The image is not mirrored in Arabic, so the stamp keeps its physical spot on the crate. */
+/* The stamp is pressed onto the customs caption, as on a cleared document. */
 .stamp {
   transform: rotate(-9deg);
   color: #6cb8ff;
