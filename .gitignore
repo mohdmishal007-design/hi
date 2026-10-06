@@ -7,3 +7,10 @@ next-env.d.ts
 .env*
 hero/drafts/*.mp4
 .impeccable/review/
+
+# Outreach: lead data and mailbox state hold contact details; keep them out of this public repo
+leads/
+outreach/.env
+outreach/state/
+__pycache__/
+!outreach/.env.example
