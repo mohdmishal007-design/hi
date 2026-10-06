@@ -1,0 +1,58 @@
+LONESTAR OUTREACH KIT
+=====================
+
+Sends your introduction emails to Eastern Province companies from YOUR
+Outlook, on YOUR laptop. You don't need IT, an admin or a password. Every
+email shows in your Sent Items like one you wrote yourself, and replies
+come to your normal Inbox.
+
+BEFORE YOU START
+  - Windows laptop with classic Outlook open and signed in to
+    rayyan@lonestarshipping.com. ("Classic" = you can see the File menu at
+    the top left. If you have a "New Outlook" switch at the top right,
+    turn it OFF.)
+  - Python from https://www.python.org/downloads/
+    In the installer, tick "Add python.exe to PATH".
+
+CHECK YOUR DETAILS (one time)
+  Open outreach\.env with Notepad. Check your name, title, phone and email.
+  Leave TRANSPORT=outlook as it is. Save.
+
+THEN DOUBLE-CLICK, IN ORDER
+  1_SETUP.bat            installs two helpers and writes a PREVIEW of today's
+                         emails into outreach\state\preview (nothing is sent)
+  2_SEND_TEST_TO_ME.bat  sends one test email to yourself
+  3_SEND_TODAY.bat       sends today's batch (30 emails, 1-2 minutes apart,
+                         so it takes about 45 minutes; leave it running)
+  4_STATUS.bat           shows how many companies you have contacted so far
+
+HOW IT BEHAVES
+  - One email per company. If a company replies, bounces, or writes
+    "remove", it gets nothing more.
+  - Follow-ups go out automatically: 4 days after the first email, then 7
+    days after that. Then it stops.
+  - It only sends Sunday to Thursday, 08:00-16:00 Saudi time.
+  - To leave a company out, open leads\Eastern_Province_Leads.xlsx, go to the
+    Email-ready sheet, and type  skip  in its status column. Save and close
+    Excel before running 3_SEND_TODAY.bat.
+  - Answer every reply yourself, quickly. That's where the business is.
+
+RUN IT EVERY DAY AUTOMATICALLY (optional)
+  Open Task Scheduler and choose "Create Basic Task", Daily, 09:00.
+  Action "Start a program": pick 3_SEND_TODAY.bat, Add arguments: auto
+  The laptop must be on and logged in, with Outlook able to open.
+
+KEEP OUT OF SPAM
+  Stay at 30 a day for the first two weeks (DAILY_LIMIT in outreach\.env).
+  After that you can raise it slowly, to no more than about 60.
+
+IF SOMETHING GOES WRONG
+  "Python is not installed": install it (see above), then restart the laptop.
+  Outlook asks "A program is trying to send e-mail on your behalf": click
+    Allow. If it asks for every email, your laptop's settings require that,
+    and you'll need to send in smaller batches (DAILY_LIMIT=10).
+  "Outlook has no account ...": the email in outreach\.env must match the
+    account in Outlook exactly.
+  "Nothing due today": everyone due has been emailed. Follow-ups come in
+    the next few days.
+  Anything else: send the message on screen to Claude.

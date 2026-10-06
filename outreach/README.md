@@ -13,6 +13,7 @@ The lead data and the send log contain contact details, so they live in `leads/`
 | `build_leads.py` | Merges both sources, labels sector and priority, checks each email domain has a mail server, and writes `leads/Eastern_Province_Leads.xlsx` |
 | `templates.py` | The email copy: one opening line per sector, plus the three steps |
 | `send_campaign.py` | Sends the sequence through Outlook, Microsoft Graph or SMTP, logs every send, stops on reply / bounce / "remove" |
+| `make_kit.py` + `kit/` | Builds `leads/Lonestar_Outreach_Kit.zip`: a double-click Windows folder with the scripts, the lead workbook and numbered .bat launchers |
 | `run_daily.bat` | Windows: sync replies, send today's batch, show totals — for double-click or Task Scheduler |
 
 ## One-time setup (Windows PC with Outlook — easiest)

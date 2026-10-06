@@ -470,6 +470,20 @@ def cmd_sync_replies(env: dict) -> None:
         print("Replied (follow these up by hand):\n  " + "\n  ".join(sorted(replied)))
 
 
+def cmd_test(leads: list[dict], env: dict, to: str) -> None:
+    batch = plan_batch(leads, read_log(), read_suppression(), 1, True)
+    if not batch:
+        sys.exit("No lead is due, so there is nothing to test with.")
+    r, step = batch[0]
+    subject, body = compose(r, step, env)
+    t = make_transport(env)
+    try:
+        t.send(to, "[TEST] " + subject, body, env)
+    finally:
+        t.close()
+    print(f"Test email sent to {to}: the step {step} email that {r['email']} ({r['company']}) would get. Nothing was logged.")
+
+
 def cmd_run(leads: list[dict], env: dict, args) -> None:
     batch = plan_batch(leads, read_log(), read_suppression(), args.limit, not args.all_addresses)
     if not batch:
@@ -534,6 +548,8 @@ def main() -> None:
     p.add_argument("--all-addresses", action="store_true", help="email every address at a company, not just the best one")
     p.add_argument("--ignore-hours", action="store_true", help="send outside Sun–Thu 08:00–16:00 AST")
     p.add_argument("--status", action="store_true")
+    p.add_argument("--test-to", metavar="EMAIL",
+                   help="send the first email of today's batch to this address instead (not logged); 'me' = SENDER_EMAIL")
     p.add_argument("--sync-replies", action="store_true")
     args = p.parse_args()
 
@@ -541,6 +557,9 @@ def main() -> None:
         cmd_sync_replies(env)
         return
     leads = load_leads(Path(args.leads), args)
+    if args.test_to:
+        cmd_test(leads, env, sender_fields(env)["sender_email"] if args.test_to == "me" else args.test_to)
+        return
     if args.status:
         cmd_status(leads)
         return
