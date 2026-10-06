@@ -15,9 +15,10 @@ first: follow-ups that are due go out before new introductions. A contact gets
 step 2 four days after step 1 and step 3 seven days after step 2, and nothing
 after a reply, a bounce, or a "remove".
 
-Settings come from outreach/.env (see outreach/.env.example). Two transports:
-  graph  Microsoft 365 via Microsoft Graph (recommended for lonestarshipping.com)
-  smtp   any SMTP server (Zoho, Google Workspace, cPanel, an SMTP relay...)
+Settings come from outreach/.env (see outreach/.env.example). Three ways to send:
+  outlook  the classic Outlook app on a Windows PC (TRANSPORT=outlook; no passwords or admin)
+  graph    Microsoft 365 via Microsoft Graph (needs an app registration by an M365 admin)
+  smtp     any SMTP server (Zoho, Google Workspace, cPanel, an SMTP relay...)
 """
 from __future__ import annotations
 
@@ -72,7 +73,7 @@ def load_env() -> dict:
             if line and not line.startswith("#") and "=" in line:
                 k, v = line.split("=", 1)
                 env[k.strip()] = v.strip().strip('"').strip("'")
-    env.update({k: v for k, v in os.environ.items() if k.startswith(("SMTP_", "GRAPH_", "SENDER_", "DAILY_", "LEADS_"))})
+    env.update({k: v for k, v in os.environ.items() if k.startswith(("SMTP_", "GRAPH_", "SENDER_", "DAILY_", "LEADS_", "TRANSPORT"))})
     return env
 
 
@@ -350,7 +351,74 @@ class GraphTransport:
         pass
 
 
+class OutlookTransport:
+    """Sends through the classic Outlook desktop app on a Windows PC.
+
+    No passwords, no admin: it uses whatever account Outlook is already
+    signed in to. Needs `pip install pywin32`. The "new Outlook" app has no
+    automation interface, so this needs classic Outlook (File menu visible).
+    """
+    name = "outlook"
+
+    def __init__(self, env: dict):
+        try:
+            import win32com.client  # type: ignore
+        except ImportError:
+            sys.exit("TRANSPORT=outlook needs Windows, classic Outlook and `pip install pywin32`.")
+        self.app = win32com.client.Dispatch("Outlook.Application")
+        self.account = None
+        want = env.get("SENDER_EMAIL", "").lower()
+        for acct in self.app.Session.Accounts:
+            if str(acct.SmtpAddress).lower() == want:
+                self.account = acct
+        if want and self.account is None:
+            names = ", ".join(str(a.SmtpAddress) for a in self.app.Session.Accounts)
+            sys.exit(f"Outlook has no account {want}. Accounts found: {names}. Fix SENDER_EMAIL in outreach/.env.")
+
+    def send(self, to: str, subject: str, body: str, env: dict) -> str:
+        mail = self.app.CreateItem(0)  # 0 = mail item
+        mail.To = to
+        mail.Subject = subject
+        mail.Body = body
+        if env.get("SENDER_REPLY_TO"):
+            mail.ReplyRecipients.Add(env["SENDER_REPLY_TO"])
+        if self.account is not None:
+            mail._oleobj_.Invoke(64209, 0, 8, 0, self.account)  # SendUsingAccount
+        mail.Send()
+        return ""
+
+    def inbox_since(self, since: datetime) -> list[dict]:
+        """Inbox messages in the same shape Graph returns, for --sync-replies."""
+        if self.account is not None:
+            inbox = self.account.DeliveryStore.GetDefaultFolder(6)
+        else:
+            inbox = self.app.Session.GetDefaultFolder(6)  # 6 = Inbox
+        items = inbox.Items
+        items.Sort("[ReceivedTime]", True)
+        cutoff = since.replace(tzinfo=None)
+        out = []
+        for item in items:
+            try:
+                received = item.ReceivedTime.replace(tzinfo=None)
+            except Exception:
+                continue
+            if received < cutoff:
+                break
+            sender = getattr(item, "SenderEmailAddress", "") or ""
+            out.append({
+                "from": {"emailAddress": {"address": str(sender)}},
+                "subject": str(getattr(item, "Subject", "") or ""),
+                "body": {"content": str(getattr(item, "Body", "") or "")},
+            })
+        return out
+
+    def close(self):
+        pass
+
+
 def make_transport(env: dict):
+    if env.get("TRANSPORT", "").lower() == "outlook":
+        return OutlookTransport(env)
     if env.get("GRAPH_CLIENT_ID"):
         return GraphTransport(env)
     if env.get("SMTP_HOST"):
@@ -381,8 +449,8 @@ def cmd_status(leads: list[dict]) -> None:
 
 def cmd_sync_replies(env: dict) -> None:
     t = make_transport(env)
-    if not isinstance(t, GraphTransport):
-        sys.exit("--sync-replies needs the Graph transport. With SMTP, add repliers and bounces to "
+    if not hasattr(t, "inbox_since"):
+        sys.exit("--sync-replies needs the Outlook or Graph connection. With SMTP, add repliers and bounces to "
                  f"{rel(SUPPRESS)} by hand.")
     contacted = {r["email"] for r in read_log() if r["result"] == "sent"}
     since = datetime.now(AST) - timedelta(days=int(env.get("SYNC_DAYS", "30")))
