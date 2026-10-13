@@ -66,6 +66,14 @@ Each chapter of the story plays a short clip as a scroll-scrubbed WebP frame seq
 - **Runtime:** Next's runtime is dropped. `scripts/artifact/site.js` runs the story, header, menu and form instead.
 - **Clips:** phones use the wide frames, cropped to fit.
 
+## Business card (Mohammed Mishal)
+
+`card/` holds a digital business card, separate from the site. Edit the details at the top of `card/build_card.py`, then run `python3 card/build_card.py` (needs `pip install pillow segno`, plus Chrome for the PNGs).
+- `card/index.html`: the card page, one self-contained file: Save contact, Call, WhatsApp, Email, and a QR code that enlarges.
+- `card/mohammed-mishal.vcf`: the contact file.
+- `card/mohammed-mishal-front.png`, `-back.png`: card faces (3.5×2 in at 600 dpi) to send as images.
+- **QR codes:** they hold the contact itself, so scanning saves it straight to the phone with no website needed.
+
 ## Before launch: still needed from Lonestar
 
 - [ ] Official Arabic trade name, as on the CR (`لون ستار للشحن` is a working name), plus the CR and VAT numbers (`src/content/site.ts`; the footer shows them once filled in)

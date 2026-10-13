@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050b16">
+<meta name="color-scheme" content="dark">
+<title>{{name}} · Lonestar Shipping</title>
+<meta name="description" content="{{title}}, {{company}}, {{city}}. Save the contact, call, WhatsApp or email.">
+<link rel="icon" href="{{mark}}">
+<style>
+{{fonts}}
+:root {
+  --night: #050b16; --deep: #081226; --panel: #0c1a33; --hull: #1b3a66;
+  --signal: #2a74cf; --signal-strong: #2466b8; --sky: #4fa8ff;
+  --ice: #eaf1fb; --mist: #a9bbd4; --dim: #7f95b4;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--night); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--night);
+  color: var(--ice);
+  font: 400 1rem/1.55 Manrope, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+::selection { background: var(--signal); color: #fff; }
+:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; border-radius: 4px; }
+.i { width: 1.25rem; height: 1.25rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+.card { position: relative; width: 100%; max-width: 30rem; margin: 0 auto; padding-bottom: calc(2.75rem + env(safe-area-inset-bottom)); }
+
+/* Dammam port at blue hour, the same still the website's story uses for the arrival. */
+.hero { position: relative; height: clamp(15rem, 64vw, 19rem); overflow: hidden; }
+.hero .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 56% 55%; }
+.hero::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(5 11 22 / 0.85) 0%, rgb(5 11 22 / 0.35) 30%, rgb(5 11 22 / 0) 46%, var(--night) 100%);
+}
+.logo { position: absolute; z-index: 1; top: calc(1.25rem + env(safe-area-inset-top)); left: 1.25rem; width: 9.5rem; height: auto; filter: drop-shadow(0 1px 10px rgb(5 11 22 / 0.9)); }
+
+.who { position: relative; padding: 0 1.25rem; margin-top: -3.75rem; }
+.name { margin: 0; font: 600 clamp(2.2rem, 11vw, 2.85rem)/0.98 Sora, system-ui, sans-serif; letter-spacing: -0.01em; text-transform: uppercase; }
+.role { margin: 0.9rem 0 0; color: var(--sky); font-weight: 600; font-size: 1.0625rem; }
+.org { margin: 0.15rem 0 0; color: var(--mist); font-size: 0.9375rem; }
+
+.actions { display: grid; gap: 0.6rem; padding: 0 1.25rem; margin-top: 1.75rem; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+  min-height: 3.25rem; padding: 0.75rem 1.25rem; border: 0; border-radius: 4px;
+  font-weight: 600; cursor: pointer;
+  transition: background-color 180ms var(--ease), box-shadow 180ms var(--ease), transform 180ms var(--ease);
+}
+.btn:active, .quick a:active { transform: scale(0.98); }
+.btn-solid { background: var(--signal); color: #fff; box-shadow: 0 10px 24px -12px rgb(47 128 224 / 0.85); }
+.btn-solid:hover { background: var(--signal-strong); }
+.btn-quiet { background: transparent; box-shadow: inset 0 0 0 1px rgb(234 241 251 / 0.3); }
+.btn-quiet:hover { background: rgb(234 241 251 / 0.05); box-shadow: inset 0 0 0 1px var(--ice); }
+.btn[hidden] { display: none; }
+.quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+.quick a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.45rem;
+  min-height: 4.75rem; border-radius: 4px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hull);
+  font-size: 0.875rem; font-weight: 600;
+  transition: box-shadow 180ms var(--ease), transform 180ms var(--ease);
+}
+.quick a:hover { box-shadow: inset 0 0 0 1px var(--sky); }
+.quick .i { color: var(--sky); }
+
+.details { list-style: none; margin: 2rem 1.25rem 0; padding: 0; border-top: 1px solid var(--hull); }
+.details a { display: grid; grid-template-columns: 1.25rem 1fr; gap: 1rem; align-items: start; padding: 1rem 0; border-bottom: 1px solid var(--hull); }
+.details .i { margin-top: 0.15rem; color: var(--dim); transition: color 180ms var(--ease); }
+.details a:hover .i { color: var(--sky); }
+.details span { min-width: 0; overflow-wrap: anywhere; }
+.details small { display: block; margin-top: 0.1rem; color: var(--mist); font-size: 0.875rem; }
+
+.qr {
+  display: flex; align-items: center; gap: 1.1rem; width: calc(100% - 2.5rem); margin: 2rem 1.25rem 0; padding: 1rem;
+  border: 0; border-radius: 6px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--hull); text-align: left;
+}
+.qr[data-ready] { cursor: zoom-in; }
+.qr-tile { flex: none; width: 6.75rem; padding: 0.45rem; border-radius: 4px; background: #fff; line-height: 0; }
+.qr-tile svg { display: block; width: 100%; height: auto; }
+.qr strong { display: block; font-weight: 600; }
+.qr small { display: block; margin-top: 0.2rem; color: var(--mist); font-size: 0.875rem; line-height: 1.45; }
+
+/* Sea, air, road: the route line from the website, in miniature. */
+.modes { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 1.25rem 0; color: var(--dim); }
+.modes .i { width: 1.125rem; height: 1.125rem; }
+.modes hr { flex: 1; height: 1px; margin: 0; border: 0; background: var(--hull); }
+.foot { margin: 0.9rem 1.25rem 0; color: var(--mist); font-size: 0.875rem; line-height: 1.5; }
+
+dialog {
+  width: min(22rem, calc(100vw - 2rem)); padding: 1.5rem; border: 0; border-radius: 8px;
+  background: #fff; color: var(--night); text-align: center;
+}
+dialog::backdrop { background: rgb(5 11 22 / 0.88); }
+dialog svg { display: block; width: 100%; height: auto; }
+dialog p { margin: 1.1rem 0 1.25rem; font-weight: 600; line-height: 1.4; }
+dialog .btn { width: 100%; background: transparent; color: var(--night); box-shadow: inset 0 0 0 1px rgb(5 11 22 / 0.3); }
+dialog .btn:hover { background: rgb(5 11 22 / 0.05); box-shadow: inset 0 0 0 1px var(--night); }
+
+@media (min-width: 40rem) {
+  html, body { background: #03070f; }
+  body { padding: 3.5rem 1rem; }
+  .card { overflow: hidden; border-radius: 8px; background: var(--night); box-shadow: 0 0 0 1px var(--hull), 0 50px 100px -50px #000; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero .photo { animation: settle 1.8s var(--ease) both; }
+  .rise { animation: rise 800ms var(--ease) both; animation-delay: calc(var(--d, 0) * 70ms + 150ms); }
+  @keyframes settle { from { transform: scale(1.07); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+}
+</style>
+</head>
+<body>
+<main class="card">
+  <header class="hero">
+    <img class="photo" src="{{hero}}" alt="" width="960" height="540">
+    <img class="logo" src="{{logo}}" alt="Lonestar Shipping" width="720" height="161">
+  </header>
+
+  <section class="who">
+    <h1 class="name rise">{{given}}<br>{{family}}</h1>
+    <p class="role rise" style="--d:1">{{title}}</p>
+    <p class="org rise" style="--d:2">{{company}} · {{city}}, {{country}}</p>
+  </section>
+
+  <div class="actions rise" style="--d:3">
+    <a class="btn btn-solid" href="{{vcard_uri}}" download="{{vcard_file}}">{{icon_user-plus}}Save contact</a>
+    <button class="btn btn-quiet" type="button" data-share hidden>{{icon_share-2}}Send contact</button>
+    <nav class="quick" aria-label="Contact {{given}}">
+      <a href="tel:{{phone}}">{{icon_phone}}Call</a>
+      <a href="{{whatsapp}}" rel="noopener">{{icon_message-circle}}WhatsApp</a>
+      <a href="mailto:{{email}}">{{icon_mail}}Email</a>
+    </nav>
+  </div>
+
+  <ul class="details rise" style="--d:4">
+    <li><a href="tel:{{phone}}">{{icon_phone}}<span>{{phone_display}}</span></a></li>
+    <li><a href="mailto:{{email}}">{{icon_mail}}<span>{{email}}</span></a></li>
+    <li><a href="{{website}}" rel="noopener">{{icon_globe}}<span>{{website_display}}</span></a></li>
+    <li><a href="{{maps}}" rel="noopener">{{icon_map-pin}}<span>{{mall}}, {{city}}<small>{{office}}, {{street}}</small></span></a></li>
+  </ul>
+
+  <button class="qr" type="button" data-qr aria-haspopup="dialog">
+    <span class="qr-tile" aria-hidden="true">{{qr}}</span>
+    <span><strong>Scan to save my contact</strong><small>Point a phone camera at the code.<span data-hint hidden> Tap to enlarge.</span></small></span>
+  </button>
+
+  <div class="modes" aria-hidden="true">{{icon_ship}}<hr>{{icon_plane}}<hr>{{icon_truck}}</div>
+  <p class="foot">Sea, air and road freight, customs clearance and oil &amp; gas project logistics from {{city}}.</p>
+</main>
+
+<dialog aria-label="Contact QR code">
+  <form method="dialog">
+    {{qr}}
+    <p>Scan with the phone camera to save {{given}} {{family}}’s contact.</p>
+    <button class="btn" type="submit">Close</button>
+  </form>
+</dialog>
+
+<script>
+(() => {
+  // Phones that can share files get a "Send contact" button that hands the .vcf to WhatsApp, Mail and so on.
+  const share = document.querySelector("[data-share]");
+  try {
+    const file = new File([{{vcard_json}}], {{vcard_file_json}}, { type: "text/vcard" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      share.hidden = false;
+      share.addEventListener("click", () => navigator.share({ files: [file] }).catch(() => {}));
+    }
+  } catch {}
+
+  const dialog = document.querySelector("dialog");
+  const qr = document.querySelector("[data-qr]");
+  if (typeof dialog.showModal === "function") {
+    qr.dataset.ready = "";
+    qr.querySelector("[data-hint]").hidden = false;
+    qr.addEventListener("click", () => dialog.showModal());
+    dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+  }
+})();
+</script>
+</body>
+</html>

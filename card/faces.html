@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+{{fonts}}
+:root {
+  --night: #050b16; --deep: #081226; --hull: #1b3a66; --sky: #4fa8ff;
+  --ice: #eaf1fb; --mist: #a9bbd4; --dim: #7f95b4;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--night); }
+body { width: 1050px; color: var(--ice); font: 400 19px/1.4 Manrope, sans-serif; -webkit-font-smoothing: antialiased; }
+.face { position: relative; width: 1050px; height: 600px; overflow: hidden; background: var(--night); }
+.i { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Front: who and how to reach them, over the Dammam port still. */
+.front .photo {
+  position: absolute; top: 0; right: 0; width: 660px; height: 600px; object-fit: cover; object-position: 60% 50%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 58%); mask-image: linear-gradient(90deg, transparent, #000 58%);
+}
+.front .shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgb(5 11 22 / 0.7), rgb(5 11 22 / 0) 50%); }
+.front .logo { position: absolute; left: 64px; top: 58px; width: 220px; }
+.front .who { position: absolute; left: 64px; top: 176px; }
+.name { margin: 0; font: 600 62px/0.98 Sora, sans-serif; letter-spacing: -0.01em; text-transform: uppercase; }
+.role { margin: 18px 0 0; color: var(--sky); font-weight: 600; font-size: 23px; }
+.contact { position: absolute; left: 64px; bottom: 54px; display: grid; gap: 11px; margin: 0; padding: 0; list-style: none; }
+.contact li { display: flex; align-items: center; gap: 14px; }
+.contact .i { color: var(--sky); }
+
+/* Back: the QR that saves the contact, and the company. */
+.back { background: var(--deep); }
+.back .qr { position: absolute; left: 64px; top: 64px; width: 336px; padding: 24px; border-radius: 10px; background: #fff; line-height: 0; }
+.back .qr svg { display: block; width: 100%; height: auto; }
+.back .qr-cap { position: absolute; left: 64px; top: 420px; width: 336px; margin: 0; text-align: center; color: var(--mist); font-weight: 600; font-size: 18px; }
+.back .side { position: absolute; left: 470px; right: 64px; top: 76px; }
+.back .logo { width: 420px; }
+.back .line { margin: 44px 0 0; color: var(--mist); font-size: 21px; line-height: 1.45; }
+.modes { position: absolute; left: 470px; right: 64px; bottom: 120px; display: flex; align-items: center; gap: 16px; color: var(--dim); }
+.modes hr { flex: 1; height: 1px; margin: 0; border: 0; background: var(--hull); }
+.web { position: absolute; left: 470px; bottom: 58px; margin: 0; font: 600 24px Sora, sans-serif; }
+</style>
+</head>
+<body>
+<section class="face front">
+  <img class="photo" src="{{hero}}" alt="">
+  <div class="shade"></div>
+  <img class="logo" src="{{logo}}" alt="">
+  <div class="who">
+    <h1 class="name">{{given}}<br>{{family}}</h1>
+    <p class="role">{{title}}</p>
+  </div>
+  <ul class="contact">
+    <li>{{icon_phone}}{{phone_display}}</li>
+    <li>{{icon_mail}}{{email}}</li>
+    <li>{{icon_globe}}{{website_display}}</li>
+    <li>{{icon_map-pin}}{{office_short}}, {{mall}}, {{city}}</li>
+  </ul>
+</section>
+<section class="face back">
+  <div class="qr">{{qr}}</div>
+  <p class="qr-cap">Scan to save my contact</p>
+  <div class="side">
+    <img class="logo" src="{{logo}}" alt="">
+    <p class="line">Sea, air and road freight, customs clearance and oil &amp; gas project logistics from {{city}}, {{country}}.</p>
+  </div>
+  <div class="modes">{{icon_ship}}<hr>{{icon_plane}}<hr>{{icon_truck}}</div>
+  <p class="web">{{website_display}}</p>
+</section>
+</body>
+</html>
