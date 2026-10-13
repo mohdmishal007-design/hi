@@ -7,9 +7,11 @@ Writes, next to this script:
   mohammed-mishal.vcf          the contact file behind "Save contact"
   mohammed-mishal-front.png    card faces at 2100×1200 (3.5×2 in at 600 dpi), to send as images
   mohammed-mishal-back.png
+  mohammed-mishal-card.pdf         front and back at card size (3.5×2 in), vector text and QR
+  mohammed-mishal-card-print.pdf   the same with 3 mm bleed on every edge, for a print shop
 
 Both QR codes hold the contact itself, so scanning saves it with no website needed.
-Needs Pillow and segno (pip install pillow segno). The PNGs need Chrome or Chromium;
+Needs Pillow and segno (pip install pillow segno). The PNGs and PDFs need Chrome or Chromium;
 set CHROME=/path/to/chrome if it isn't found.
 """
 import base64
@@ -66,6 +68,9 @@ ICONS = {
 }
 
 STILL = ROOT / "public" / "img" / "story" / "s3-2400.webp"
+CARD_IN = (3.5, 2.0)  # card size; each face is designed at 1050×600 px
+ZOOM = CARD_IN[0] * 96 / 1050  # print scale that fits the 1050 px design to 3.5 in
+BLEED_MM = 3  # print-shop bleed on every edge
 
 
 def vcard(full: bool) -> str:
@@ -105,6 +110,23 @@ def webp(path: Path, width: int, quality: int) -> bytes:
     return buf.getvalue()
 
 
+def faded_photo(size: tuple[int, int], focus_x: float, fade: float) -> bytes:
+    """Cover-crop the still to `size`, fading it into the night navy over the left `fade` of its width."""
+    im = Image.open(STILL).convert("RGB")
+    scale = max(size[0] / im.width, size[1] / im.height)
+    im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
+    left, top = round((im.width - size[0]) * focus_x), (im.height - size[1]) // 2
+    im = im.crop((left, top, left + size[0], top + size[1]))
+    ramp = Image.new("L", (size[0], 1))
+    # Smoothstep rather than linear, so the fade has no visible starting edge.
+    t = [min(1.0, x / (fade * size[0])) for x in range(size[0])]
+    ramp.putdata([round(255 * v * v * (3 - 2 * v)) for v in t])
+    faded = Image.composite(im, Image.new("RGB", size, (5, 11, 22)), ramp.resize(size))
+    buf = BytesIO()
+    faded.save(buf, "JPEG", quality=90, optimize=True)
+    return buf.getvalue()
+
+
 def fonts_css() -> str:
     faces = [("Sora", 600, "sora-600"), ("Manrope", 400, "manrope-400"), ("Manrope", 600, "manrope-600")]
     return "\n".join(
@@ -136,23 +158,39 @@ def find_chrome() -> str | None:
     return next((c for c in candidates if c and Path(c).exists()), None)
 
 
-def render_faces(html: str) -> None:
+def run_chrome(chrome: str, *args: str) -> None:
+    cmd = [chrome, "--headless=new", "--disable-gpu", *args]
+    if hasattr(os, "geteuid") and os.geteuid() == 0:
+        cmd.insert(1, "--no-sandbox")
+    subprocess.run(cmd, check=True, capture_output=True)
+
+
+def render_faces(template: str, values: dict) -> None:
+    """The card faces as PNGs, and as PDFs at trim size and with bleed for print shops."""
     chrome = find_chrome()
     if not chrome:
-        print("Chrome not found: skipped the PNG card faces (set CHROME=/path/to/chrome).")
+        print("Chrome not found: skipped the PNG and PDF card faces (set CHROME=/path/to/chrome).")
         return
+    page_mm = f"{CARD_IN[0] * 25.4 + 2 * BLEED_MM:.1f}mm {CARD_IN[1] * 25.4 + 2 * BLEED_MM:.1f}mm"
+    variants = {
+        "trim": {"bleed": "0px", "page_size": f"{CARD_IN[0]}in {CARD_IN[1]}in"},
+        "print": {"bleed": f"{BLEED_MM / 25.4 * 96 / ZOOM:.3f}px", "page_size": page_mm},
+    }
     still_prompt = json.loads(Path(f"{STILL.with_name('s3-1280.webp')}.json").read_text())["prompt"]
     note = f"Business card face made by card/build_card.py. Background photo: {still_prompt}"
-    # The window is taller than the two faces: headless Chrome's viewport is shorter than its window.
+
     with tempfile.TemporaryDirectory() as tmp:
-        page, shot = Path(tmp) / "faces.html", Path(tmp) / "faces.png"
-        page.write_text(html)
-        args = [chrome, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=2",
-                "--window-size=1050,1400", f"--screenshot={shot}", page.as_uri()]
-        if hasattr(os, "geteuid") and os.geteuid() == 0:
-            args.insert(1, "--no-sandbox")
-        subprocess.run(args, check=True, capture_output=True)
-        sheet = Image.open(shot).convert("RGB")
+        src, shot = Path(tmp) / "faces.html", Path(tmp) / "faces.png"
+        for variant, extra in variants.items():
+            src.write_text(fill(template, {**values, **extra, "zoom": f"{ZOOM:.4f}"}))
+            suffix = "" if variant == "trim" else "-print"
+            run_chrome(chrome, "--no-pdf-header-footer", f"--print-to-pdf={HERE / f'{SLUG}-card{suffix}.pdf'}", src.as_uri())
+            if variant == "trim":
+                # The window is taller than the two faces: headless Chrome's viewport is shorter than its window.
+                run_chrome(chrome, "--hide-scrollbars", "--force-device-scale-factor=2", "--window-size=1050,1400",
+                           f"--screenshot={shot}", src.as_uri())
+                sheet = Image.open(shot).convert("RGB")
+
     if sheet.size != (2100, 2800):
         raise SystemExit(f"Unexpected screenshot size {sheet.size}")
     meta = PngImagePlugin.PngInfo()
@@ -187,8 +225,8 @@ def main() -> None:
 
     page = fill((HERE / "template.html").read_text(), {**values, "hero": data_uri(webp(STILL, 960, 72), "image/webp")})
     (HERE / "index.html").write_text(page)
-    faces = fill((HERE / "faces.html").read_text(), {**values, "hero": data_uri(webp(STILL, 1600, 82), "image/webp")})
-    render_faces(faces)
+    photo = data_uri(faded_photo((1320, 1200), focus_x=0.6, fade=0.58), "image/jpeg")
+    render_faces((HERE / "faces.html").read_text(), {**values, "photo": photo})
 
     print(f"index.html {len(page) / 1000:.0f} KB · QR version {qr.version} ({qr.symbol_size(border=0)[0]} modules)")
 

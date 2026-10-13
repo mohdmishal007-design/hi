@@ -68,10 +68,11 @@ Each chapter of the story plays a short clip as a scroll-scrubbed WebP frame seq
 
 ## Business card (Mohammed Mishal)
 
-`card/` holds a digital business card, separate from the site. Edit the details at the top of `card/build_card.py`, then run `python3 card/build_card.py` (needs `pip install pillow segno`, plus Chrome for the PNGs).
+`card/` holds a digital business card, separate from the site. Edit the details at the top of `card/build_card.py`, then run `python3 card/build_card.py` (needs `pip install pillow segno`, plus Chrome for the PNGs and PDFs).
 - `card/index.html`: the card page, one self-contained file: Save contact, Call, WhatsApp, Email, and a QR code that enlarges.
 - `card/mohammed-mishal.vcf`: the contact file.
 - `card/mohammed-mishal-front.png`, `-back.png`: card faces (3.5×2 in at 600 dpi) to send as images.
+- `card/mohammed-mishal-card.pdf`: front and back at card size (3.5×2 in), with sharp vector text and QR. `-card-print.pdf` is the same with 3 mm bleed on every edge, for a print shop.
 - **QR codes:** they hold the contact itself, so scanning saves it straight to the phone with no website needed.
 
 ## Before launch: still needed from Lonestar
